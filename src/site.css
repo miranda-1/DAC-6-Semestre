@@ -1,0 +1,499 @@
+/* ===== O "site da turma" mostrado dentro do navegador ===== */
+
+.site-root {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-size: calc(16px * var(--fs));
+  transition: background-color 0.5s, color 0.5s;
+}
+.site-root * {
+  transition: background-color 0.5s, color 0.5s, border-color 0.5s, border-radius 0.4s, box-shadow 0.4s;
+}
+.site-scroll {
+  height: 100%;
+  overflow: auto;
+}
+
+/* ---------- Visual "sem CSS" (padrão do navegador) ---------- */
+.site-raw {
+  padding: 8px;
+}
+.site-raw h1 {
+  font-size: 2em;
+  font-weight: bold;
+  margin: 0.67em 0;
+}
+.site-raw p {
+  margin: 1em 0;
+}
+.site-root[data-color]:not([data-color='none']) h1 {
+  color: var(--accent);
+}
+
+/* Botão padrão do navegador */
+.site-btn {
+  font: 13.333px Arial, sans-serif;
+  color: #000;
+  background: #efefef;
+  border: 1px solid #767676;
+  border-radius: 3px;
+  padding: 2px 8px;
+  cursor: pointer;
+}
+.site-btn:active {
+  background: #e5e5e5;
+}
+.site-btn.styled {
+  font-family: inherit;
+  font-size: 1.05em;
+  font-weight: 700;
+  padding: 0.9em 2em;
+  letter-spacing: 0.01em;
+  transition: transform 0.15s, background-color 0.5s, color 0.5s, border-radius 0.4s, box-shadow 0.4s;
+}
+.site-btn.styled:hover {
+  transform: translateY(-2px);
+}
+.site-btn.styled:active {
+  transform: translateY(1px);
+}
+
+/* ---------- Site com tema ---------- */
+.site-themed {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  animation: site-in 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+@keyframes site-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+}
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1em;
+  padding: 1.1em 2.2em;
+  border-bottom: 1px solid color-mix(in srgb, var(--text) 12%, transparent);
+}
+.site-logo {
+  font-weight: 800;
+  font-size: 1.05em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.site-nav nav {
+  display: flex;
+  gap: 1.6em;
+  font-size: 0.9em;
+  opacity: 0.75;
+}
+
+.site-hero {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2.5em;
+  padding: 3em 2.2em 2.5em;
+  flex: 1;
+}
+.site-hero-text {
+  flex: 1 1 340px;
+  min-width: 0;
+}
+.site-eyebrow {
+  display: inline-block;
+  font-size: 0.8em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--accent);
+  border: 1.5px solid var(--accent);
+  border-radius: 999px;
+  padding: 0.35em 0.9em;
+  margin-bottom: 1.2em;
+}
+.site-hero h1 {
+  font-size: 3.6em;
+  line-height: 1.05;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.35em;
+  overflow-wrap: anywhere;
+}
+.site-root[data-font='gamer'] .site-hero h1 {
+  line-height: 1.35;
+  letter-spacing: 0;
+}
+.site-lead {
+  font-size: 1.2em;
+  line-height: 1.5;
+  opacity: 0.8;
+  max-width: 28em;
+  margin-bottom: 1.8em;
+}
+.site-root[data-font='gamer'] .site-lead {
+  line-height: 1.9;
+}
+
+.site-art {
+  flex: 0 0 auto;
+  width: 280px;
+  height: 280px;
+  margin: 0 auto;
+  font-size: 16px; /* a arte não depende da fonte escolhida */
+}
+
+.site-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.2em;
+  padding: 0 2.2em 2.5em;
+}
+.site-cards article {
+  background: var(--surface);
+  border: 1.5px solid color-mix(in srgb, var(--text) 12%, transparent);
+  border-radius: 16px;
+  padding: 1.3em;
+}
+.site-card-icon {
+  font-size: 1.8em;
+  margin-bottom: 0.4em;
+}
+.site-cards h3 {
+  font-weight: 700;
+  font-size: 1.1em;
+  margin-bottom: 0.3em;
+}
+.site-cards p {
+  font-size: 0.92em;
+  opacity: 0.72;
+  line-height: 1.5;
+}
+
+/* Atmosfera de fundo de cada tema */
+.site-root[data-theme='games'] .site-hero {
+  background-image: linear-gradient(color-mix(in srgb, var(--text) 6%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--text) 6%, transparent) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+.site-root[data-theme='espaco'] .site-hero {
+  background-image: radial-gradient(color-mix(in srgb, var(--text) 25%, transparent) 1px, transparent 1.5px);
+  background-size: 34px 34px;
+}
+.site-root[data-theme='musica'] .site-hero {
+  background-image: repeating-radial-gradient(
+    circle at 100% 50%,
+    transparent 0 22px,
+    color-mix(in srgb, var(--accent) 10%, transparent) 22px 24px
+  );
+}
+.site-root[data-theme='esportes'] .site-hero {
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent 0 60px,
+    color-mix(in srgb, var(--accent) 6%, transparent) 60px 120px
+  );
+}
+.site-root[data-theme='filmes'] .site-hero {
+  background-image: radial-gradient(ellipse at 80% 40%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 60%);
+}
+
+/* ---------- Decorações (feitas só com CSS) ---------- */
+
+/* Games */
+.deco-pixels {
+  height: 100%;
+  border: 3px solid var(--text);
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  box-shadow: 8px 8px 0 var(--accent);
+}
+.deco-score {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  align-self: stretch;
+  text-align: center;
+}
+.deco-invader {
+  display: grid;
+  grid-template-columns: repeat(11, 16px);
+  gap: 2px;
+  animation: bob 1.2s steps(2) infinite;
+}
+.deco-invader span {
+  width: 16px;
+  height: 16px;
+}
+.deco-invader span.on {
+  background: var(--accent);
+}
+.deco-ship {
+  color: var(--text);
+  font-size: 28px;
+  line-height: 1;
+  animation: slide 3s ease-in-out infinite alternate;
+}
+@keyframes bob {
+  50% {
+    transform: translateY(8px);
+  }
+}
+@keyframes slide {
+  from {
+    transform: translateX(-70px);
+  }
+  to {
+    transform: translateX(70px);
+  }
+}
+
+/* Música */
+.deco-eq {
+  position: relative;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 6px;
+  padding: 24px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 3px solid var(--text);
+  overflow: hidden;
+}
+.deco-eq span {
+  width: 10px;
+  height: 30%;
+  background: var(--accent);
+  border-radius: 6px;
+  margin-bottom: 60px;
+  animation: eq 0.9s ease-in-out infinite alternate;
+}
+@keyframes eq {
+  from {
+    height: 12%;
+  }
+  to {
+    height: 58%;
+  }
+}
+.deco-eq-note {
+  position: absolute;
+  top: 34px;
+  font-size: 40px;
+  color: var(--accent);
+  animation: bob 1.6s ease-in-out infinite;
+}
+
+/* Esportes */
+.deco-field {
+  position: relative;
+  height: 100%;
+  border: 3px solid var(--accent);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--accent) 12%, var(--surface));
+  overflow: hidden;
+}
+.deco-field .mid {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  border-left: 3px solid var(--accent);
+}
+.deco-field .circle {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 80px;
+  height: 80px;
+  margin: -40px 0 0 -40px;
+  border: 3px solid var(--accent);
+  border-radius: 50%;
+}
+.deco-field .box {
+  position: absolute;
+  top: 30%;
+  height: 40%;
+  width: 40px;
+  border: 3px solid var(--accent);
+}
+.deco-field .box.left {
+  left: -3px;
+}
+.deco-field .box.right {
+  right: -3px;
+}
+.deco-field .ball {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  font-size: 30px;
+  margin: -18px 0 0 -18px;
+  animation: kick 2.4s ease-in-out infinite;
+}
+@keyframes kick {
+  0% {
+    transform: translate(-90px, 40px) rotate(0);
+  }
+  50% {
+    transform: translate(90px, -50px) rotate(360deg);
+  }
+  100% {
+    transform: translate(-90px, 40px) rotate(720deg);
+  }
+}
+
+/* Filmes */
+.deco-film {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  transform: rotate(-8deg);
+}
+.deco-film .strip {
+  display: flex;
+  gap: 10px;
+  padding: 22px 10px;
+  background: var(--text);
+  background-image: radial-gradient(var(--bg) 4px, transparent 4.5px), radial-gradient(var(--bg) 4px, transparent 4.5px);
+  background-size: 22px 22px;
+  background-position: 0 -2px, 0 calc(100% + 2px);
+  background-repeat: repeat-x;
+  animation: roll 6s linear infinite;
+}
+.deco-film .frame {
+  flex: 0 0 120px;
+  height: 100px;
+  display: grid;
+  place-items: center;
+  font-size: 42px;
+  background: var(--accent);
+  border-radius: 4px;
+}
+@keyframes roll {
+  to {
+    transform: translateX(-520px);
+  }
+}
+
+/* Espaço */
+.deco-space {
+  position: relative;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #2a2350, #07071a 70%);
+  overflow: hidden;
+  border: 3px solid var(--text);
+}
+.deco-space .star {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: #fff;
+  border-radius: 50%;
+  animation: twinkle 2s ease-in-out infinite;
+}
+@keyframes twinkle {
+  50% {
+    opacity: 0.15;
+  }
+}
+.deco-space .planet {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 110px;
+  height: 110px;
+  margin: -55px 0 0 -55px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--accent) 60%, white), var(--accent) 60%);
+  box-shadow: 0 0 40px color-mix(in srgb, var(--accent) 70%, transparent);
+}
+.deco-space .planet::after {
+  content: '';
+  position: absolute;
+  left: -40px;
+  right: -40px;
+  top: 45%;
+  height: 18px;
+  border: 4px solid color-mix(in srgb, var(--accent) 50%, white);
+  border-radius: 50%;
+  transform: rotate(-18deg);
+}
+.deco-space .rocket {
+  position: absolute;
+  font-size: 34px;
+  left: 18%;
+  bottom: 14%;
+  animation: fly 3s ease-in-out infinite alternate;
+}
+@keyframes fly {
+  to {
+    transform: translate(40px, -30px);
+  }
+}
+
+/* ---------- Modal (JavaScript) ---------- */
+.site-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 10, 20, 0.5);
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  z-index: 10;
+  animation: fade 0.25s ease-out;
+}
+.site-modal {
+  background: var(--surface);
+  color: var(--text);
+  border: 3px solid var(--accent);
+  border-radius: 22px;
+  padding: 2.2em 2.4em 2em;
+  max-width: 34em;
+  text-align: center;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+  animation: pop 0.45s cubic-bezier(0.2, 1.4, 0.4, 1);
+}
+.site-modal-icon {
+  font-size: 3em;
+  margin-bottom: 0.3em;
+  animation: bob 1.4s ease-in-out infinite;
+}
+.site-modal h2 {
+  font-size: 2em;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 1em;
+  color: var(--accent);
+  overflow-wrap: anywhere;
+}
+.site-root[data-font='gamer'] .site-modal h2 {
+  line-height: 1.6;
+}
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: scale(0.6) translateY(30px);
+  }
+}
