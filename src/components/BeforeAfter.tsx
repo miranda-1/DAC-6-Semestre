@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react'
-import { Pencil } from 'lucide-react'
+import { Download, Pencil, RotateCcw, X } from 'lucide-react'
 import { INITIAL_STATE, type SiteState, displayTitle, slug } from '../data'
 import { scribble } from '../sound'
 import SitePreview from './SitePreview'
@@ -90,11 +90,11 @@ export default function BeforeAfter({ state, onClose }: { state: SiteState; onCl
   return (
     <div className="fixed inset-0 z-50 flex flex-col items-center overflow-x-hidden overflow-y-auto bg-paper px-6 pt-16 pb-8 md:justify-center md:overflow-hidden md:py-0">
       <div className="absolute top-3 right-3 flex gap-2 md:top-5 md:right-5">
-        <button type="button" className="btn-ghost" onClick={() => setRun((r) => r + 1)}>
-          ↺<span className="hidden md:inline"> Rever</span>
+        <button type="button" title="Rever" className="btn-ghost inline-flex items-center gap-1.5" onClick={() => setRun((r) => r + 1)}>
+          <RotateCcw size={18} /><span className="hidden md:inline"> Rever</span>
         </button>
-        <button type="button" className="btn-ink" onClick={onClose}>
-          ✕<span className="hidden md:inline"> Fechar (Esc)</span>
+        <button type="button" title="Fechar" className="btn-ink inline-flex items-center gap-1.5" onClick={onClose}>
+          <X size={18} /><span className="hidden md:inline"> Fechar (Esc)</span>
         </button>
       </div>
 
@@ -145,8 +145,8 @@ export default function BeforeAfter({ state, onClose }: { state: SiteState; onCl
         }`}
       >
         <p className="text-center font-mono text-base text-black/60 md:text-lg">de usuários → a criadores de tecnologia</p>
-        <button type="button" className="btn-accent relative z-10 px-6 py-3 text-lg" onClick={download} disabled={saving}>
-          {saving ? 'Preparando…' : '⬇ Baixar nosso site'}
+        <button type="button" className="btn-accent relative z-10 inline-flex items-center gap-2 px-6 py-3 text-lg" onClick={download} disabled={saving}>
+          {saving ? 'Preparando…' : <><Download size={20} /> Baixar nosso site</>}
         </button>
         <p className="max-w-sm text-center text-sm text-black/50">
           Um arquivo .html com o site da turma e dicas de cursos grátis para continuar aprendendo.

@@ -128,7 +128,7 @@ export default function MobileShell(p: ShellProps) {
       </div>
       {open && (
         <div
-          className="sheet step-in relative z-10 flex max-h-[52%] min-h-0 flex-col rounded-t-2xl border-x-2 border-t-2 border-ink bg-paper shadow-[0_-10px_30px_rgba(0,0,0,0.12)]"
+          className="sheet step-in relative z-10 flex max-h-[52%] min-h-0 [@media(max-height:700px)]:max-h-[44%] flex-col rounded-t-2xl border-x-2 border-t-2 border-ink bg-paper shadow-[0_-10px_30px_rgba(0,0,0,0.12)]"
           style={drag.style}
         >
           <div className="sheet-grip relative flex cursor-grab touch-none items-center justify-center pt-2.5 pb-2 select-none" title="Arraste para baixo para esconder" {...drag.handlers}>
@@ -156,7 +156,15 @@ export default function MobileShell(p: ShellProps) {
           </div>
         </div>
       )}
-      <nav className="tabbar grid grid-cols-6 border-t-2 border-ink bg-paper pb-[env(safe-area-inset-bottom)]">
+      <nav className="tabbar relative grid grid-cols-6 border-t-2 border-ink bg-paper pb-[env(safe-area-inset-bottom)]">
+        {/* .btn-accent já tem position: relative (skins.css), então quem fica preso acima da barra é o embrulho */}
+        {!open && (
+          <div className="absolute right-4 bottom-full z-10 mb-3">
+            <button type="button" onClick={() => setOpen(true)} className="btn-accent inline-flex items-center gap-1.5 px-4 py-2.5">
+              <ChevronUp size={18} /> Escolher
+            </button>
+          </div>
+        )}
         {STEPS.map((s, i) => {
           const I = STEP_ICONS[i]
           const active = i === p.step
@@ -180,15 +188,6 @@ export default function MobileShell(p: ShellProps) {
           )
         })}
       </nav>
-      {!open && (
-        <button
-          type="button"
-          onClick={() => setOpen(true)}
-          className="btn-accent fixed right-4 bottom-[76px] z-10 inline-flex items-center gap-1.5 rounded-full px-4 py-2.5 shadow-lg"
-        >
-          <ChevronUp size={18} /> Escolher
-        </button>
-      )}
     </>
   )
 }
