@@ -1,10 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { INITIAL_STATE, type SiteState, displayTitle, slug } from './data'
+import { INITIAL_STATE, type SiteState, sanitizeState } from './data'
 import { LANG_OF, type ChangeKey, type Lang } from './code'
 import ControlPanel, { STEPS } from './components/ControlPanel'
-import SitePreview from './components/SitePreview'
-import CodePanel, { type Flash } from './components/CodePanel'
+import { type Flash } from './components/CodePanel'
+import PreviewFrame, { type PreviewProps } from './components/PreviewFrame'
 import BeforeAfter from './components/BeforeAfter'
+import MobileShell from './components/MobileShells'
+import { SoundToggle } from './components/Pencil'
+import { DoodleFilters } from './components/Doodle'
 
 const STORAGE_KEY = 'oficina-do-usuario-ao-criador'
 
@@ -13,7 +16,8 @@ function load(): { state: SiteState; step: number } {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (raw) {
       const parsed = JSON.parse(raw)
-      return { state: { ...INITIAL_STATE, ...parsed.state }, step: Number(parsed.step) || 0 }
+      const step = Math.trunc(Number(parsed?.step)) || 0
+      return { state: sanitizeState(parsed?.state), step: Math.max(0, Math.min(STEPS.length - 1, step)) }
     }
   } catch {
     /* sem localStorage: começa do zero */
@@ -21,7 +25,21 @@ function load(): { state: SiteState; step: number } {
   return { state: INITIAL_STATE, step: 0 }
 }
 
+// true abaixo de 1024px (onde a ferramenta usa o layout de celular)
+function useIsMobile() {
+  const query = '(max-width: 1023px)'
+  const [mobile, setMobile] = useState(() => matchMedia(query).matches)
+  useEffect(() => {
+    const mq = matchMedia(query)
+    const on = () => setMobile(mq.matches)
+    mq.addEventListener('change', on)
+    return () => mq.removeEventListener('change', on)
+  }, [])
+  return mobile
+}
+
 export default function App() {
+  const mobile = useIsMobile()
   const [initial] = useState(load)
   const [state, setState] = useState<SiteState>(initial.state)
   const [step, setStepRaw] = useState(initial.step)
@@ -102,8 +120,23 @@ export default function App() {
     setConfirmReset(false)
   }
 
+  const preview: PreviewProps = { state, codeOpen, setCodeOpen, codeTab, setCodeTab, flash, pulse }
+
   return (
-    <div className="flex h-screen flex-col bg-paper text-ink">
+    <div className="flex h-dvh flex-col bg-paper text-ink">
+      <DoodleFilters />
+      {mobile ? (
+        <MobileShell
+          state={state}
+          update={update}
+          step={step}
+          setStep={setStep}
+          onTransform={() => setTransform(true)}
+          onReset={() => setConfirmReset(true)}
+          preview={preview}
+        />
+      ) : (
+        <>
       {/* Barra superior */}
       {presenting ? (
         <header className="flex items-center gap-4 border-b-[1.5px] border-ink px-6 py-2.5">
@@ -127,25 +160,36 @@ export default function App() {
           </button>
         </header>
       ) : (
-        <header className="flex items-center justify-between border-b-[1.5px] border-ink px-6 py-3">
-          <div className="flex items-baseline gap-3">
+        <header className="app-header flex items-center justify-between gap-3 border-b-[1.5px] border-ink px-4 py-2.5 lg:px-6 lg:py-3">
+          <div className="flex min-w-0 items-baseline gap-2 lg:gap-3">
             <span className="font-mono text-lg font-bold text-accent">&lt;/&gt;</span>
-            <h1 className="text-xl font-extrabold tracking-tight">Do usuário ao criador</h1>
+            <h1 className="truncate text-lg font-extrabold tracking-tight lg:text-xl">Do usuário ao criador</h1>
             <span className="hidden font-mono text-sm text-black/45 md:inline">~/oficina/site-da-turma</span>
           </div>
           <div className="flex items-center gap-3">
-            <button type="button" className="font-mono text-sm text-black/45 hover:text-ink" onClick={() => setConfirmReset(true)}>
-              ↺ Recomeçar oficina
+            <SoundToggle />
+            <button
+              type="button"
+              title="Recomeçar oficina"
+              className="shrink-0 font-mono text-sm text-black/45 hover:text-ink"
+              onClick={() => setConfirmReset(true)}
+            >
+              ↺<span className="hidden sm:inline"> Recomeçar oficina</span>
             </button>
-            <button type="button" className="btn-accent" onClick={enterPresentation}>
+            <button type="button" className="btn-accent hidden lg:block" onClick={enterPresentation}>
               ▶ Modo apresentação
             </button>
           </div>
         </header>
       )}
 
-      <div className="flex min-h-0 flex-1">
-        <aside className={`shrink-0 border-r-[1.5px] border-ink bg-paper ${presenting ? 'w-[36%] max-w-[640px]' : 'w-[440px]'}`}>
+      {/* No celular: preview em cima e escolhas embaixo. No computador: lado a lado. */}
+      <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
+        <aside
+          className={`order-2 min-h-0 flex-1 border-t-[1.5px] border-ink bg-paper lg:order-none lg:flex-none lg:shrink-0 lg:border-t-0 lg:border-r-[1.5px] ${
+            presenting ? 'lg:w-[36%] lg:max-w-[640px]' : 'lg:w-[440px]'
+          }`}
+        >
           <ControlPanel
             state={state}
             update={update}
@@ -156,52 +200,22 @@ export default function App() {
           />
         </aside>
 
-        <section className={`flex min-w-0 flex-1 flex-col ${presenting ? 'p-4' : 'p-6'}`}>
-          {/* Navegador falso */}
-          <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl border-2 border-ink bg-white shadow-[8px_8px_0_#111]">
-            <div className="flex items-center gap-3 border-b-2 border-ink bg-paper px-4 py-2.5">
-              <div className="flex gap-1.5">
-                <span className="h-3 w-3 rounded-full border-[1.5px] border-ink bg-[#FF5C5C]" />
-                <span className="h-3 w-3 rounded-full border-[1.5px] border-ink bg-[#FFBD2E]" />
-                <span className="h-3 w-3 rounded-full border-[1.5px] border-ink bg-[#28C840]" />
-              </div>
-              <div className="flex min-w-0 flex-1 items-center gap-2 rounded-full border-[1.5px] border-ink bg-white px-4 py-1 font-mono text-sm">
-                <span className="text-black/40">🔒</span>
-                <span className="truncate">
-                  <span className="text-black/40">https://</span>
-                  {slug(displayTitle(state))}.com.br
-                </span>
-              </div>
-              <button
-                type="button"
-                key={codeOpen ? 'open' : pulse}
-                onClick={() => setCodeOpen((o) => !o)}
-                className={`shrink-0 border-[1.5px] border-ink px-3 py-1 font-mono text-sm font-bold transition-colors ${
-                  codeOpen ? 'bg-ink text-paper' : `bg-white hover:bg-accent hover:text-white ${pulse ? 'pulse' : ''}`
-                }`}
-              >
-                &lt;/&gt; {codeOpen ? 'Esconder código' : 'Ver código'}
-              </button>
-            </div>
-
-            <div className="relative min-h-0 flex-1">
-              <SitePreview state={state} />
-            </div>
-
-            {codeOpen && (
-              <div className="h-[42%] min-h-[200px] shrink-0">
-                <CodePanel state={state} tab={codeTab} onTab={setCodeTab} flash={flash} onClose={() => setCodeOpen(false)} />
-              </div>
-            )}
-          </div>
+        <section
+          className={`stage flex min-w-0 shrink-0 flex-col p-3 transition-[height] duration-300 lg:h-auto lg:flex-1 lg:shrink ${
+            codeOpen ? 'h-[62dvh]' : 'h-[44dvh]'
+          } ${presenting ? 'lg:p-4' : 'lg:p-6'}`}
+        >
+          <PreviewFrame {...preview} />
         </section>
       </div>
+        </>
+      )}
 
       {transform && <BeforeAfter state={state} onClose={() => setTransform(false)} />}
 
       {confirmReset && (
         <div className="fixed inset-0 z-50 grid place-items-center bg-black/40 p-6" onClick={() => setConfirmReset(false)}>
-          <div className="step-in w-full max-w-md border-2 border-ink bg-paper p-7 shadow-[8px_8px_0_#111]" onClick={(e) => e.stopPropagation()}>
+          <div className="step-in w-full max-w-md border-2 border-ink bg-paper p-7 shadow-[8px_8px_0_var(--hard)]" onClick={(e) => e.stopPropagation()}>
             <div className="font-mono text-sm text-accent">recomeçar</div>
             <h2 className="mt-1 text-3xl font-extrabold tracking-tight">Recomeçar a oficina?</h2>
             <p className="mt-3 text-black/65">Todas as escolhas da turma serão apagadas e o site volta ao estado inicial.</p>

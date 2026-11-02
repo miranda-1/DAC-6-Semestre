@@ -1,0 +1,274 @@
+/* ===== Aparência da ferramenta: "Caderno" (papel pautado e caneta azul) =====
+   Só muda a ferramenta; o site da turma tem cores e fontes próprias. */
+html {
+  --color-paper: #fdfbf3;
+  --color-ink: #1f3a93;
+  --color-accent: #e63946;
+  --color-accent-soft: #ffb3ba;
+  --color-white: #fffef9;
+  --color-black: #1f3a93;
+  --hard: rgba(31, 58, 147, 0.25);
+}
+
+/* Folha pautada com margem vermelha */
+html .bg-paper {
+  background-image: linear-gradient(90deg, transparent 46px, rgba(230, 57, 70, 0.35) 46px 48px, transparent 48px),
+    repeating-linear-gradient(transparent 0 31px, rgba(31, 58, 147, 0.13) 31px 32px);
+}
+
+/* Títulos escritos à mão */
+html h1:not(.site-root *),
+html h2:not(.site-root *) {
+  font-family: 'Caveat', cursive;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+html h2:not(.site-root *) {
+  font-size: 3rem;
+}
+html h2.text-2xl:not(.site-root *) {
+  font-size: 2.2rem;
+}
+html h2.write-in {
+  font-size: 2.8rem;
+}
+@media (min-width: 768px) {
+  html h2.write-in {
+    font-size: 4.6rem;
+  }
+}
+
+/* Cantos tortinhos, como desenhados à mão */
+html .choice,
+html .btn-ink,
+html .btn-accent,
+html .btn-ghost,
+html input,
+html .rounded-xl {
+  border-width: 2px;
+  border-radius: 6px 16px 8px 14px / 14px 8px 16px 6px;
+}
+
+/* Fita adesiva em cima de cada cartão */
+html .choice::after {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  width: 54px;
+  height: 18px;
+  margin-left: -27px;
+  background: rgba(255, 214, 102, 0.75);
+  transform: rotate(-3deg);
+}
+
+/* ----- Estilo cartum: cartões, campos e botões desenhados à mão -----
+   O contorno grosso, o fundo e a sombra ficam numa camada (::before) com traço tremido;
+   o texto fica por cima e não treme. */
+html .choice,
+html .chip,
+html .btn-ink,
+html .btn-accent,
+html .btn-ghost,
+html .sketch-field {
+  position: relative;
+  isolation: isolate;
+  border-color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+html .choice::before,
+html .chip::before,
+html .btn-ink::before,
+html .btn-accent::before,
+html .btn-ghost::before,
+html .sketch-field::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border: 3px solid var(--color-ink);
+  border-radius: 10px 18px 12px 16px / 16px 10px 18px 12px;
+  background: var(--color-white);
+  box-shadow: 4px 5px 0 var(--color-ink);
+  outline: 1.5px solid color-mix(in srgb, var(--color-ink) 28%, transparent);
+  outline-offset: 3px;
+  filter: url(#rabisco-forte);
+  transition: box-shadow 0.15s, border-color 0.15s;
+}
+html .btn-ink::before {
+  background: var(--color-ink);
+}
+html .btn-accent::before {
+  background: var(--color-accent);
+}
+html .chip::before {
+  border-width: 2.5px;
+  box-shadow: 3px 3px 0 var(--color-ink);
+  outline: none;
+}
+html .btn-ink:disabled::before,
+html .btn-ghost:disabled::before {
+  box-shadow: none;
+}
+
+/* cartões levemente tortos, cada um para um lado, que balançam ao passar o mouse */
+html .choice {
+  transform: rotate(-0.8deg);
+  transition: transform 0.2s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+html .choice:nth-child(even) {
+  transform: rotate(0.8deg);
+}
+html .choice:hover,
+html .choice:focus-visible {
+  transform: rotate(-1.8deg) scale(1.02);
+}
+html .choice:hover::before {
+  box-shadow: 6px 7px 0 var(--color-ink);
+}
+html .choice.selected {
+  transform: rotate(0.5deg) scale(1.03);
+}
+html .choice.selected::before {
+  border-color: var(--color-accent);
+  box-shadow: 6px 7px 0 var(--color-accent);
+}
+html .choice:active {
+  transform: scale(0.97);
+}
+html .btn-ink:not(:disabled):hover,
+html .btn-accent:not(:disabled):hover,
+html .btn-ghost:not(:disabled):hover {
+  transform: rotate(-1.5deg) translateY(-2px);
+}
+html .btn-ink:not(:disabled):hover::before,
+html .btn-accent:not(:disabled):hover::before,
+html .btn-ghost:not(:disabled):hover::before {
+  box-shadow: 6px 7px 0 var(--color-ink);
+}
+
+/* campos de digitar: quadro desenhado e letra escrita à mão */
+html .sketch-field input {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  font-family: 'Caveat', cursive;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+html .sketch-field input.text-2xl {
+  font-size: 2.4rem;
+}
+html .sketch-field:focus-within::before {
+  border-color: var(--color-accent);
+  box-shadow: 5px 6px 0 var(--color-accent-soft);
+}
+
+/* Onde fica o site: uma mesa de madeira, com um lápis e uma régua na beirada */
+html .stage {
+  position: relative;
+  background: linear-gradient(transparent 49.7%, rgba(60, 30, 5, 0.25) 50%, transparent 50.3%),
+    repeating-linear-gradient(92deg, rgba(90, 50, 15, 0.08) 0 2px, transparent 2px 11px),
+    repeating-linear-gradient(90deg, #c48a56 0 180px, #b98049 180px 360px);
+  box-shadow: inset 0 0 50px rgba(60, 30, 5, 0.35);
+}
+html .stage .frame {
+  z-index: 1;
+}
+html .stage::before,
+html .stage::after {
+  content: '';
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+}
+/* lápis */
+html .stage::before {
+  left: 18px;
+  bottom: 8px;
+  width: 170px;
+  height: 14px;
+  background: linear-gradient(90deg, #333 0 6px, #f1c99a 6px 24px, #ffd54a 24px 140px, #c9ccd3 140px 150px, #ff8fab 150px);
+  clip-path: polygon(0 50%, 24px 0, 100% 0, 100% 100%, 24px 100%);
+  transform: rotate(-4deg);
+}
+/* régua */
+html .stage::after {
+  right: 20px;
+  bottom: 6px;
+  width: 190px;
+  height: 22px;
+  border-radius: 2px;
+  background: repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.55) 0 1px, transparent 1px 9px) top / 100% 7px no-repeat,
+    #f4d35e;
+  transform: rotate(3deg);
+}
+html .stage .browser {
+  box-shadow: 6px 8px 0 rgba(60, 35, 10, 0.35);
+}
+@media (max-width: 1023px) {
+  /* no celular a margem é pequena: o lápis e a régua cobririam o site */
+  html .stage::before,
+  html .stage::after {
+    display: none;
+  }
+}
+
+/* O navegador é uma folha de caderno com espiral em cima */
+html .frame-rings {
+  position: absolute;
+  z-index: 3;
+  top: -12px;
+  left: 18px;
+  right: 18px;
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+}
+html .frame-rings i {
+  width: 9px;
+  height: 26px;
+  border: 3px solid #7d8290;
+  border-radius: 6px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.6), transparent);
+}
+html .browser {
+  border-radius: 4px 4px 10px 10px;
+}
+html .browser .browser-bar {
+  padding-top: 16px;
+  background: repeating-linear-gradient(transparent 0 19px, rgba(31, 58, 147, 0.15) 19px 20px), #fffef6;
+}
+html .browser-url {
+  border: none;
+  border-bottom: 2px solid rgba(31, 58, 147, 0.4);
+  border-radius: 0;
+  background: transparent;
+  font: 700 1.05rem 'Caveat', cursive;
+}
+@media (max-width: 1023px) {
+  html .frame-rings {
+    top: -7px;
+    left: 12px;
+    right: 12px;
+  }
+  html .frame-rings i {
+    width: 7px;
+    height: 18px;
+    border-width: 2px;
+  }
+  html .frame-rings i:nth-child(n + 11) {
+    display: none;
+  }
+  html .browser .browser-bar {
+    padding-top: 12px;
+  }
+}
+
+@media (min-width: 1024px) {
+  html .stage {
+    padding: 34px;
+  }
+}
+

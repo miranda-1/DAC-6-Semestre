@@ -37,12 +37,12 @@ export default function CodePanel({ state, tab, onTab, flash, onClose }: Props) 
             key={t.id}
             type="button"
             onClick={() => onTab(t.id)}
-            className={`flex items-baseline gap-2 border-r border-white/10 px-5 py-2.5 font-mono text-sm transition-colors ${
+            className={`flex items-baseline gap-2 border-r border-white/10 px-3 py-2 font-mono text-xs transition-colors sm:text-sm lg:px-5 lg:py-2.5 ${
               tab === t.id ? 'bg-code text-white' : 'text-white/50 hover:text-white/80'
             }`}
           >
             <span className={`font-bold ${tab === t.id ? 'text-accent-soft' : ''}`}>{t.label}</span>
-            <span className="text-xs opacity-70">= {t.hint}</span>
+            <span className="hidden text-xs opacity-70 sm:inline">= {t.hint}</span>
           </button>
         ))}
         <div className="flex-1" />

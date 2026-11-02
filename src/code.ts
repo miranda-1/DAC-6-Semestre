@@ -37,7 +37,7 @@ export function htmlCode(s: SiteState): CodeLine[] {
   }
   return [
     L('<header>', 'theme'),
-    L(`  <span>${theme.emoji} ${title}</span>`, 'theme', 'title'),
+    L(`  <span><img src="${theme.logo}.svg"> ${title}</span>`, 'theme', 'title'),
     L(`  <nav>${theme.nav.map((n) => `<a>${n}</a>`).join(' ')}</nav>`, 'theme'),
     L('</header>', 'theme'),
     L(''),
@@ -48,58 +48,71 @@ export function htmlCode(s: SiteState): CodeLine[] {
     L(''),
     ...ART_HTML[theme.deco].map((t) => L(t, 'theme')),
     L(''),
-    L('<section class="cartoes">', 'theme'),
-    ...theme.cards.map((c) => L(`  <div><h3>${c.icon} ${c.title}</h3> <p>${c.text}</p></div>`, 'theme')),
+    L('<section class="lista">', 'theme'),
+    L('  <h2>Minha lista</h2>', 'theme'),
+    L('  <!-- o JavaScript cria o conteúdo aqui -->', 'theme'),
     L('</section>', 'theme'),
+    L(''),
+    L(`<footer>${title} · Feito pela turma</footer>`, 'theme', 'title'),
   ]
 }
+
+// Um resumo do JavaScript da "Minha lista" (o código completo vai no HTML baixado).
+const LISTA_JS = ['let favoritos = [];', '', 'function favoritar(item) {', '  favoritos.push(item);', '  contador.textContent = favoritos.length;', '}']
 
 // A "arte" de cada tema, em HTML simplificado.
 const ART_HTML: Record<Deco, string[]> = {
   pixels: [
-    '<div class="arte fliperama">',
-    '  <p>HI-SCORE 013370</p>',
-    '  <div class="invasor">👾</div>',
-    '  <div class="nave">▲</div>',
+    '<div class="arte portatil">',
+    '  <div class="tela">',
+    '    <div class="peca"></div>',
+    '    <!-- ...mais blocos empilhados -->',
+    '    <p>LINHAS 042</p>',
+    '  </div>',
+    '  <div class="direcional"></div>',
+    '  <button class="botao-b">B</button>',
+    '  <button class="botao-a">A</button>',
     '</div>',
   ],
   equalizer: [
-    '<div class="arte equalizador">',
-    '  <span class="nota">♪</span>',
-    '  <span class="barra"></span>',
-    '  <span class="barra"></span>',
-    '  <!-- ...mais 12 barras iguais -->',
+    '<div class="arte player">',
+    '  <div class="capa"><img src="ondas.svg"></div>',
+    '  <h3>Faixa 01</h3>',
+    '  <p>Playlist da turma</p>',
+    '  <div class="progresso"></div>',
+    '  <button class="tocar">▶</button>',
     '</div>',
   ],
   field: [
-    '<div class="arte campo">',
-    '  <div class="linha-do-meio"></div>',
-    '  <div class="circulo-central"></div>',
-    '  <div class="area esquerda"></div>',
-    '  <div class="area direita"></div>',
-    '  <span class="bola">⚽</span>',
+    '<div class="arte placar">',
+    '  <p class="ao-vivo">AO VIVO</p>',
+    '  <p>TURMA <strong>3</strong> × <strong>2</strong> RIVAIS</p>',
+    '  <p class="gol">GOOOL!</p>',
     '</div>',
   ],
   filmstrip: [
-    '<div class="arte filme">',
-    '  <div class="quadro">🎬</div>',
-    '  <div class="quadro">🍿</div>',
-    '  <div class="quadro">⭐</div>',
-    '  <div class="quadro">🎞️</div>',
+    '<div class="arte claquete">',
+    '  <div class="haste"></div>',
+    '  <p>CENA 01 · TAKE 3</p>',
+    '  <p>DIREÇÃO: A TURMA</p>',
     '</div>',
+    '<p class="acao">AÇÃO!</p>',
   ],
   stars: [
     '<div class="arte espaco">',
     '  <span class="estrela"></span>',
-    '  <!-- ...mais 27 estrelas -->',
+    '  <!-- ...mais 25 estrelas -->',
     '  <div class="planeta"></div>',
-    '  <span class="foguete">🚀</span>',
+    '  <div class="astronauta">',
+    '    <div class="capacete"><div class="visor"></div></div>',
+    '    <div class="corpo"></div>',
+    '  </div>',
     '</div>',
   ],
 }
 
 // O CSS que desenha e anima a arte de cada tema.
-function artCss(deco: Deco, accent: string): CodeLine[] {
+function artCss(deco: Deco, accent: string, accent2: string): CodeLine[] {
   const rule = (sel: string, ...props: [string, ChangeKey[]][]) => [
     L(`${sel} {`, 'theme'),
     ...props.map(([t, tags]) => L(`  ${t}`, ...tags)),
@@ -111,31 +124,36 @@ function artCss(deco: Deco, accent: string): CodeLine[] {
   switch (deco) {
     case 'pixels':
       return [
-        ...rule('.invasor', [`color: ${accent};`, TC], ['animation: flutuar 1.2s infinite;', T]),
-        ...rule('.nave', ['animation: deslizar 3s infinite;', T]),
+        ...rule('main::before', ['transform: perspective(260px) rotateX(58deg);', T], ['animation: andar 1.4s infinite;', T]),
+        ...rule('.portatil', ['border-radius: 16px 16px 48px 16px;', T]),
+        ...rule('.peca', [`background-color: ${accent2};`, TC], ['animation: cair 3.5s infinite;', T]),
+        ...rule('.botao-a', [`background-color: ${accent};`, TC], ['border-radius: 50%;', T]),
       ]
     case 'equalizer':
       return [
-        ...rule('.equalizador', ['border-radius: 50%;', T]),
-        ...rule('.barra', [`background-color: ${accent};`, TC], ['animation: pular 0.9s infinite;', T]),
+        ...rule('.capa', [`background: linear-gradient(${accent}, ${accent2});`, TC], ['border-radius: 16px;', T]),
+        ...rule('.progresso', [`background-color: ${accent};`, TC], ['animation: tocar 6s infinite;', T]),
+        ...rule('.tocar', [`background-color: ${accent};`, TC], ['border-radius: 50%;', T]),
       ]
     case 'field':
       return [
-        ...rule('.campo, .area, .circulo-central', [`border: 3px solid ${accent};`, TC]),
-        ...rule('.circulo-central', ['border-radius: 50%;', T]),
-        ...rule('.bola', ['animation: chutar 2.4s infinite;', T]),
+        ...rule('.placar', ['background-color: #0B0D14;', T], ['font-family: "Press Start 2P";', T]),
+        ...rule('.placar strong', [`text-shadow: 0 0 14px ${accent};`, TC]),
+        ...rule('.gol', [`background-color: ${accent};`, TC], ['animation: piscar 1.6s infinite;', T]),
       ]
     case 'filmstrip':
       return [
-        ...rule('.filme', ['transform: rotate(-8deg);', T], ['animation: rolar 6s infinite;', T]),
-        ...rule('.quadro', [`background-color: ${accent};`, TC]),
+        ...rule('.haste', ['transform-origin: left bottom;', T], ['animation: bater 2s infinite;', T]),
+        ...rule('.claquete', [`box-shadow: 8px 8px 0 ${accent};`, TC]),
+        ...rule('.acao', [`color: ${accent};`, TC], ['animation: aparecer 2s infinite;', T]),
       ]
     case 'stars':
       return [
         ...rule('.espaco', ['border-radius: 50%;', T], ['background-color: #07071A;', T]),
         ...rule('.estrela', ['animation: piscar 2s infinite;', T]),
         ...rule('.planeta', ['border-radius: 50%;', T], [`background-color: ${accent};`, TC]),
-        ...rule('.foguete', ['animation: voar 3s infinite;', T]),
+        ...rule('.astronauta', ['animation: flutuar 6s infinite;', T]),
+        ...rule('.visor', [`background: linear-gradient(${accent}, ${accent2});`, TC]),
       ]
   }
 }
@@ -180,9 +198,16 @@ export function cssCode(s: SiteState): CodeLine[] {
     lines.push(L('}'), L(''))
   }
 
+  if (theme && pal) {
+    lines.push(L('.lista {', 'theme'))
+    lines.push(L(`  background-color: ${pal.surface};`, 'color'))
+    lines.push(L('  border-radius: 22px;', 'theme'))
+    lines.push(L('}', 'theme'), L(''))
+  }
+
   if (theme) {
-    lines.push(C(`/* Arte do tema ${theme.label} */`))
-    lines.push(...artCss(theme.deco, accent))
+    lines.push(C(theme.id === 'games' ? '/* Fundo neon e arte do tema Games */' : `/* Arte do tema ${theme.label} */`))
+    lines.push(...artCss(theme.deco, accent, pal?.accent2 ?? '#000000'))
   }
 
   while (lines.length && lines[lines.length - 1].text === '') lines.pop()
@@ -191,18 +216,18 @@ export function cssCode(s: SiteState): CodeLine[] {
 
 export function jsCode(s: SiteState): CodeLine[] {
   const msg = getMessage(s)
-  if (!msg) {
-    return [
-      C('// Ainda não tem JavaScript.'),
-      C('// O botão existe (HTML) e tem visual (CSS),'),
-      C('// mas ainda não FAZ nada quando clicamos.'),
-    ]
+  const lines: CodeLine[] = msg
+    ? [L('function explorar() {', 'message'), L(`  mostrarMensagem("${msg}");`, 'message'), L('}', 'message')]
+    : [
+        C('// O botão ainda não FAZ nada quando clicamos.'),
+        C('// (escolha uma mensagem na etapa Ação)'),
+      ]
+  if (getTheme(s)) {
+    lines.push(L(''), C('// Minha lista'), ...LISTA_JS.map((t) => L(t, 'theme')))
+  } else if (!msg) {
+    lines.unshift(C('// Ainda não tem JavaScript.'))
   }
-  return [
-    L('function explorar() {', 'message'),
-    L(`  mostrarMensagem("${msg}");`, 'message'),
-    L('}', 'message'),
-  ]
+  return lines
 }
 
 export const CODE: Record<Lang, (s: SiteState) => CodeLine[]> = { html: htmlCode, css: cssCode, js: jsCode }

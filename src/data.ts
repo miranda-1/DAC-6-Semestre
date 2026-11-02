@@ -31,12 +31,13 @@ export type Deco = 'pixels' | 'equalizer' | 'field' | 'filmstrip' | 'stars'
 export interface Theme {
   id: Exclude<ThemeId, 'none'>
   label: string
-  emoji: string
+  emoji: string // usado nos cartões de escolha da ferramenta
+  logo: string // nome do ícone (ver src/icons.tsx)
   eyebrow: string
   tagline: string
   nav: string[]
   deco: Deco
-  cards: { icon: string; title: string; text: string }[]
+  cards: { icon: string; title: string; text: string }[] // icon = nome do ícone
   titles: string[]
 }
 
@@ -45,14 +46,15 @@ export const THEMES: Theme[] = [
     id: 'games',
     label: 'Games',
     emoji: '🎮',
+    logo: 'controle',
     eyebrow: 'Level 1 · Press start',
     tagline: 'Dicas, lançamentos e os jogos favoritos da turma.',
     nav: ['Jogos', 'Ranking', 'Dicas'],
     deco: 'pixels',
     cards: [
-      { icon: '🏆', title: 'Ranking da turma', text: 'Quem zerou mais jogos este mês?' },
-      { icon: '🕹️', title: 'Clássicos', text: 'Os jogos que marcaram gerações.' },
-      { icon: '⚡', title: 'Lançamentos', text: 'O que vem por aí.' },
+      { icon: 'trofeu', title: 'Ranking da turma', text: 'Quem zerou mais jogos este mês?' },
+      { icon: 'joystick', title: 'Clássicos', text: 'Os jogos que marcaram gerações.' },
+      { icon: 'raio', title: 'Lançamentos', text: 'O que vem por aí.' },
     ],
     titles: ['Universo Gamer', 'Zona Gamer', 'Game On!'],
   },
@@ -60,14 +62,15 @@ export const THEMES: Theme[] = [
     id: 'musica',
     label: 'Música',
     emoji: '🎧',
+    logo: 'fone',
     eyebrow: 'Aperte o play',
     tagline: 'As playlists e os artistas que a turma não para de ouvir.',
     nav: ['Playlists', 'Artistas', 'Shows'],
     deco: 'equalizer',
     cards: [
-      { icon: '🎤', title: 'Artistas', text: 'Quem a turma está ouvindo.' },
-      { icon: '🎸', title: 'Playlists', text: 'Uma trilha sonora para cada momento.' },
-      { icon: '🎹', title: 'Lançamentos', text: 'Os sons novos da semana.' },
+      { icon: 'microfone', title: 'Artistas', text: 'Quem a turma está ouvindo.' },
+      { icon: 'playlist', title: 'Playlists', text: 'Uma trilha sonora para cada momento.' },
+      { icon: 'ondas', title: 'Lançamentos', text: 'Os sons novos da semana.' },
     ],
     titles: ['Som da Turma', 'Playlist Infinita', 'Volume Máximo'],
   },
@@ -75,14 +78,15 @@ export const THEMES: Theme[] = [
     id: 'esportes',
     label: 'Esportes',
     emoji: '⚽',
+    logo: 'medalha',
     eyebrow: 'Bola rolando',
     tagline: 'Resultados, jogadas incríveis e os times da turma.',
     nav: ['Times', 'Jogos', 'Tabela'],
     deco: 'field',
     cards: [
-      { icon: '🏆', title: 'Campeonatos', text: 'Quem vai levar a taça?' },
-      { icon: '🏀', title: 'Jogadas', text: 'Os melhores lances da semana.' },
-      { icon: '📊', title: 'Estatísticas', text: 'Os números por trás da vitória.' },
+      { icon: 'trofeu', title: 'Campeonatos', text: 'Quem vai levar a taça?' },
+      { icon: 'fogo', title: 'Jogadas', text: 'Os melhores lances da semana.' },
+      { icon: 'grafico', title: 'Estatísticas', text: 'Os números por trás da vitória.' },
     ],
     titles: ['Arena da Turma', 'Placar Final', 'Time Campeão'],
   },
@@ -90,14 +94,15 @@ export const THEMES: Theme[] = [
     id: 'filmes',
     label: 'Filmes',
     emoji: '🎬',
+    logo: 'claquete',
     eyebrow: 'Em cartaz',
     tagline: 'Críticas, estreias e os filmes favoritos da turma.',
     nav: ['Estreias', 'Críticas', 'Top 10'],
     deco: 'filmstrip',
     cards: [
-      { icon: '🍿', title: 'Estreias', text: 'O que chega aos cinemas.' },
-      { icon: '⭐', title: 'Críticas', text: 'Vale ou não vale o ingresso?' },
-      { icon: '🎞️', title: 'Clássicos', text: 'Filmes que todo mundo deveria ver.' },
+      { icon: 'pipoca', title: 'Estreias', text: 'O que chega aos cinemas.' },
+      { icon: 'estrela', title: 'Críticas', text: 'Vale ou não vale o ingresso?' },
+      { icon: 'filme', title: 'Clássicos', text: 'Filmes que todo mundo deveria ver.' },
     ],
     titles: ['Cine Turma', 'Sessão da Tarde', 'Luz, Câmera, Ação'],
   },
@@ -105,14 +110,15 @@ export const THEMES: Theme[] = [
     id: 'espaco',
     label: 'Espaço',
     emoji: '🚀',
+    logo: 'foguete',
     eyebrow: 'Missão 01',
     tagline: 'Planetas, estrelas e os mistérios do universo.',
     nav: ['Planetas', 'Missões', 'Galáxias'],
     deco: 'stars',
     cards: [
-      { icon: '🪐', title: 'Planetas', text: 'Um tour pelo Sistema Solar.' },
-      { icon: '🌌', title: 'Galáxias', text: 'Bilhões de estrelas por aí.' },
-      { icon: '👩‍🚀', title: 'Missões', text: 'Quem já foi (e quem vai) lá.' },
+      { icon: 'orbita', title: 'Planetas', text: 'Um tour pelo Sistema Solar.' },
+      { icon: 'brilho', title: 'Galáxias', text: 'Bilhões de estrelas por aí.' },
+      { icon: 'satelite', title: 'Missões', text: 'Quem já foi (e quem vai) lá.' },
     ],
     titles: ['Rumo às Estrelas', 'Universo da Turma', 'Missão Espaço'],
   },
@@ -125,15 +131,16 @@ export interface Palette {
   surface: string
   text: string
   accent: string
+  accent2: string // cor de destaque secundária (detalhes da arte e dos cartões)
   onAccent: string
 }
 
 export const PALETTES: Palette[] = [
-  { id: 'roxo', label: 'Roxo', bg: '#F3EEFF', surface: '#FFFFFF', text: '#1E1240', accent: '#6C4DFF', onAccent: '#FFFFFF' },
-  { id: 'azul', label: 'Azul', bg: '#EAF2FF', surface: '#FFFFFF', text: '#0B1B3F', accent: '#2563EB', onAccent: '#FFFFFF' },
-  { id: 'verde', label: 'Verde-água', bg: '#E3FAF5', surface: '#FFFFFF', text: '#053B36', accent: '#0FA896', onAccent: '#FFFFFF' },
-  { id: 'laranja', label: 'Laranja', bg: '#FFF1E6', surface: '#FFFFFF', text: '#3A1A05', accent: '#FF6B1A', onAccent: '#FFFFFF' },
-  { id: 'escuro', label: 'Modo escuro', bg: '#0F0F14', surface: '#1B1B24', text: '#F4F4F5', accent: '#A78BFA', onAccent: '#0F0F14' },
+  { id: 'roxo', label: 'Roxo', bg: '#F4F0FF', surface: '#FFFFFF', text: '#1E1240', accent: '#6C4DFF', accent2: '#FF5FA2', onAccent: '#FFFFFF' },
+  { id: 'azul', label: 'Azul', bg: '#EBF3FF', surface: '#FFFFFF', text: '#0B1B3F', accent: '#2563EB', accent2: '#06B6D4', onAccent: '#FFFFFF' },
+  { id: 'verde', label: 'Verde-água', bg: '#E6FAF5', surface: '#FFFFFF', text: '#053B36', accent: '#0D9488', accent2: '#F59E0B', onAccent: '#FFFFFF' },
+  { id: 'laranja', label: 'Laranja', bg: '#FFF3EA', surface: '#FFFFFF', text: '#3A1A05', accent: '#EA580C', accent2: '#DB2777', onAccent: '#FFFFFF' },
+  { id: 'escuro', label: 'Modo escuro', bg: '#0E0E16', surface: '#191926', text: '#F4F4F5', accent: '#A78BFA', accent2: '#22D3EE', onAccent: '#0F0F14' },
 ]
 
 // Cores "sem CSS": o padrão do navegador.
@@ -142,6 +149,7 @@ export const DEFAULT_PALETTE: Omit<Palette, 'id' | 'label'> = {
   surface: '#FFFFFF',
   text: '#000000',
   accent: '#000000',
+  accent2: '#000000',
   onAccent: '#FFFFFF',
 }
 
@@ -227,4 +235,22 @@ export function slug(title: string): string {
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
   return s || 'meu-site'
+}
+
+// Confere o que veio salvo no navegador: qualquer valor estranho (versão antiga,
+// dado corrompido) volta para o padrão em vez de quebrar a página.
+export function sanitizeState(raw: unknown): SiteState {
+  const r = (raw && typeof raw === 'object' && !Array.isArray(raw) ? raw : {}) as Record<string, unknown>
+  const pick = <T extends string>(value: unknown, allowed: readonly T[], fallback: T): T =>
+    allowed.includes(value as T) ? (value as T) : fallback
+  const text = (value: unknown, fallback: string, max: number) => (typeof value === 'string' ? value.slice(0, max) : fallback)
+  return {
+    theme: pick(r.theme, ['none', ...THEMES.map((t) => t.id)], 'none'),
+    title: text(r.title, INITIAL_STATE.title, 40),
+    color: pick(r.color, ['none', ...PALETTES.map((p) => p.id)], 'none'),
+    font: pick(r.font, ['none', ...FONTS.map((f) => f.id)], 'none'),
+    button: pick(r.button, ['none', ...BUTTONS.map((b) => b.id)], 'none'),
+    message: pick(r.message, ['none', 'custom', ...MESSAGES.map((m) => m.id)], 'none'),
+    customMessage: text(r.customMessage, '', 70),
+  }
 }

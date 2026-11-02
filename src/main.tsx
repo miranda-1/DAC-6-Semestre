@@ -18,10 +18,14 @@ import '@fontsource/caveat/700.css'
 
 import './index.css'
 import './site.css'
+import './skins.css'
 import App from './App'
+import ErrorBoundary from './components/ErrorBoundary'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <ErrorBoundary>
+      <App />
+    </ErrorBoundary>
   </StrictMode>,
 )

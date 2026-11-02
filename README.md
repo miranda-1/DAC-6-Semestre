@@ -31,4 +31,10 @@ npm run preview  # abre em http://localhost:4173
 4. Clique em **</> Ver código** no navegador do preview. A cada escolha, a aba certa (HTML/CSS/JavaScript) abre e a linha alterada **pisca por ~1 segundo**. Dica: deixe o código aberto a partir da etapa de cores.
 5. Na etapa final, clique em **Ver transformação ✨** para mostrar ANTES → DEPOIS ("Vocês fizeram isso."). **↺ Rever** repete a animação.
 
+6. Na tela final, **⬇ Baixar nosso site** gera um arquivo `.html` com o site da turma funcionando e, logo abaixo, uma página **Continue aprendendo** com o código da turma, como editar o arquivo, cursos grátis no YouTube e onde estudar HTML, CSS e JavaScript de graça.
+
+## No celular
+
+A ferramenta também funciona no celular: o site aparece em cima e as escolhas embaixo. Com o `npm run dev` rodando, os celulares na **mesma rede Wi-Fi** abrem o endereço `Network` que aparece no terminal (ex.: `http://192.168.0.10:5173`).
+
 O estado fica salvo no navegador (localStorage): se a página recarregar, a criação da turma não se perde.
