@@ -330,15 +330,20 @@
   border-color: var(--accent2);
   background: color-mix(in srgb, var(--accent2) 10%, transparent);
 }
-.w-estrela {
+.widget-body .w-estrela {
   position: absolute;
-  top: 0.6em;
-  right: 0.6em;
+  top: 50%;
+  right: 0.35em;
+  display: grid;
+  place-items: center;
+  width: 1.9em;
+  height: 1.9em;
+  margin-top: -0.95em;
   border: none;
   background: none;
-  font-size: 1.4em;
+  font-size: 1.15em;
   line-height: 1;
-  color: color-mix(in srgb, var(--text) 25%, transparent) !important;
+  color: color-mix(in srgb, var(--text) 40%, transparent) !important;
   transition: transform 0.2s, color 0.2s;
 }
 .w-card.favorito .w-estrela {
@@ -396,6 +401,11 @@
     radial-gradient(circle 9px at 100% 50%, transparent 98%, #000) right / 51% 100% no-repeat;
   mask: radial-gradient(circle 9px at 0 50%, transparent 98%, #000) left / 51% 100% no-repeat,
     radial-gradient(circle 9px at 100% 50%, transparent 98%, #000) right / 51% 100% no-repeat;
+}
+/* Sem cor escolhida, o destaque padrão é escuro e sumiria nos temas de fundo escuro */
+.site-root[data-color='none']:is([data-theme='games'], [data-theme='filmes'], [data-theme='espaco']) .site-widget {
+  --accent: var(--text);
+  --accent2: var(--text);
 }
 /* Espaço: céu estrelado */
 .site-root[data-theme='espaco'] .site-widget {
@@ -1306,8 +1316,34 @@
     zoom: 0.68;
   }
   .site-widget {
-    margin: 0 1em 1.8em;
-    padding: 1.2em;
+    margin: 0 0.8em 1.6em;
+    padding: 1.1em 0.9em;
+  }
+  .site-widget-head {
+    margin-bottom: 0.9em;
+  }
+  .site-widget-head .site-card-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+  }
+  .site-widget-head h2 {
+    font-size: 1.25em;
+  }
+  .w-topo {
+    margin-bottom: 0.8em;
+  }
+  .w-filtro {
+    padding: 0.4em 0.85em;
+    font-size: 0.85em;
+  }
+  .w-grade {
+    grid-template-columns: 1fr;
+    gap: 0.5em;
+  }
+  .w-card {
+    padding: 0.7em 2.8em 0.7em 0.9em;
+    border-radius: 12px;
   }
   .site-footer {
     padding: 1.1em 1.2em;

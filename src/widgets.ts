@@ -31,7 +31,8 @@ function lista(el, itens) {
       var favorito = favoritos.indexOf(i) >= 0;
       if (soMinhaLista && !favorito) return;
       var card = criar('div', 'w-card' + (favorito ? ' favorito' : ''));
-      card.innerHTML = '<button type="button" class="w-estrela">★</button><strong></strong><span></span>';
+      card.innerHTML =
+        '<button type="button" class="w-estrela" aria-label="Favoritar"><svg viewBox="0 0 24 24" width="1em" height="1em"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26" fill="currentColor"/></svg></button><strong></strong><span></span>';
       card.querySelector('strong').textContent = item.title;
       card.querySelector('span').textContent = item.text;
       card.querySelector('button').onclick = function () {
