@@ -1,6 +1,6 @@
 // A ferramenta no celular: site em cima, opções num painel que dá para esconder e as 6 etapas numa barra no rodapé.
-import { useState } from 'react'
-import { ArrowLeft, ArrowRight, CaseSensitive, ChevronUp, LayoutGrid, MousePointerClick, Palette, RotateCcw, Sparkles, Type, Zap } from 'lucide-react'
+import { useRef, useState } from 'react'
+import { ArrowLeft, ArrowRight, CaseSensitive, ChevronDown, ChevronUp, LayoutGrid, MousePointerClick, Palette, RotateCcw, Sparkles, Type, Zap } from 'lucide-react'
 import type { SiteState } from '../data'
 import type { ChangeKey } from '../code'
 import { CONCEPT, STEPS, StepBody } from './ControlPanel'
@@ -74,8 +74,52 @@ function BackButton({ step, setStep }: Pick<ShellProps, 'step' | 'setStep'>) {
   )
 }
 
+// Arrastar a alça do painel para baixo: ele segue o dedo e fecha se passar do limite ou se o gesto for rápido.
+function useSheetDrag(onClose: () => void) {
+  const [dy, setDy] = useState(0)
+  const [closing, setClosing] = useState(false)
+  const start = useRef<{ y: number; t: number } | null>(null)
+  const close = () => {
+    setClosing(true)
+    setTimeout(() => {
+      onClose()
+      setClosing(false)
+      setDy(0)
+    }, 220)
+  }
+  const handlers = {
+    onPointerDown: (e: React.PointerEvent) => {
+      if ((e.target as HTMLElement).closest('button')) return
+      start.current = { y: e.clientY, t: performance.now() }
+      e.currentTarget.setPointerCapture(e.pointerId)
+    },
+    onPointerMove: (e: React.PointerEvent) => {
+      if (start.current) setDy(Math.max(0, e.clientY - start.current.y))
+    },
+    onPointerUp: (e: React.PointerEvent) => {
+      if (!start.current) return
+      const moved = e.clientY - start.current.y
+      const speed = moved / (performance.now() - start.current.t)
+      start.current = null
+      if (moved > 90 || (moved > 20 && speed > 0.5)) close()
+      else setDy(0)
+    },
+    onPointerCancel: () => {
+      start.current = null
+      setDy(0)
+    },
+  }
+  const dragging = start.current !== null
+  const style: React.CSSProperties = {
+    transform: closing ? 'translateY(100%)' : `translateY(${dy}px)`,
+    transition: dragging ? 'none' : 'transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1)',
+  }
+  return { handlers, style, close }
+}
+
 export default function MobileShell(p: ShellProps) {
   const [open, setOpen] = useState(true)
+  const drag = useSheetDrag(() => setOpen(false))
   return (
     <>
       <SlimHeader onReset={p.onReset} />
@@ -83,10 +127,21 @@ export default function MobileShell(p: ShellProps) {
         <PreviewFrame {...p.preview} />
       </div>
       {open && (
-        <div className="sheet step-in flex max-h-[52%] min-h-0 flex-col rounded-t-2xl border-x-2 border-t-2 border-ink bg-paper shadow-[0_-10px_30px_rgba(0,0,0,0.12)]">
-          <button type="button" className="flex justify-center pt-2 pb-1 text-black/40" onClick={() => setOpen(false)} title="Esconder escolhas">
+        <div
+          className="sheet step-in relative z-10 flex max-h-[52%] min-h-0 flex-col rounded-t-2xl border-x-2 border-t-2 border-ink bg-paper shadow-[0_-10px_30px_rgba(0,0,0,0.12)]"
+          style={drag.style}
+        >
+          <div className="sheet-grip relative flex cursor-grab touch-none items-center justify-center pt-2.5 pb-2 select-none" title="Arraste para baixo para esconder" {...drag.handlers}>
             <span className="h-1.5 w-12 rounded-full bg-black/25" />
-          </button>
+            <button
+              type="button"
+              className="sheet-close absolute top-1 right-2 inline-flex items-center gap-1 px-2 py-1.5 text-xs font-semibold text-black/55"
+              onClick={drag.close}
+              title="Esconder escolhas"
+            >
+              Esconder <ChevronDown size={16} />
+            </button>
+          </div>
           <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-3" key={p.step}>
             <div className="step-in">
               <StepTitle step={p.step} />
