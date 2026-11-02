@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react'
-import { Download, Pencil, RotateCcw, X } from 'lucide-react'
+import { Download, ExternalLink, Pencil, RotateCcw, X } from 'lucide-react'
 import { INITIAL_STATE, type SiteState, displayTitle, slug } from '../data'
 import { scribble } from '../sound'
 import SitePreview from './SitePreview'
@@ -69,6 +69,12 @@ export default function BeforeAfter({ state, onClose }: { state: SiteState; onCl
     }
   }
 
+  const openSite = async () => {
+    const tab = window.open('', '_blank')
+    const { openSite } = await import('../exportSite')
+    await openSite(state, tab)
+  }
+
   // Linha do tempo: 1 seta desenhada · 2 lápis contorna e colore o "depois" · 3 título escrito à mão · 4 final
   useEffect(() => {
     setPhase(0)
@@ -122,7 +128,12 @@ export default function BeforeAfter({ state, onClose }: { state: SiteState; onCl
           <path pathLength={1} d="M72 16 L90 30 L74 44" />
         </svg>
         <div
-          className={`relative rotate-1 transition-all duration-500 ${phase >= 2 ? 'scale-100 opacity-100' : 'scale-95 opacity-0'}`}
+          role="button"
+          tabIndex={0}
+          title="Abrir o site"
+          onClick={openSite}
+          onKeyDown={(e) => e.key === 'Enter' && openSite()}
+          className={`relative rotate-1 cursor-pointer transition-all duration-500 ${phase >= 2 ? 'scale-100 opacity-100' : 'scale-95 opacity-0'}`}
         >
           <MiniBrowser state={state} scale={k} label="depois">
             {phase >= 2 && (
@@ -145,11 +156,16 @@ export default function BeforeAfter({ state, onClose }: { state: SiteState; onCl
         }`}
       >
         <p className="text-center font-mono text-base text-black/60 md:text-lg">de usuários → a criadores de tecnologia</p>
-        <button type="button" className="btn-accent relative z-10 inline-flex items-center gap-2 px-6 py-3 text-lg" onClick={download} disabled={saving}>
-          {saving ? 'Preparando…' : <><Download size={20} /> Baixar nosso site</>}
-        </button>
+        <div className="flex flex-wrap justify-center gap-3">
+          <button type="button" className="btn-accent relative z-10 inline-flex items-center gap-2 px-6 py-3 text-lg" onClick={openSite}>
+            <ExternalLink size={20} /> Abrir nosso site
+          </button>
+          <button type="button" className="btn-ghost relative z-10 inline-flex items-center gap-2 px-5 py-3" onClick={download} disabled={saving}>
+            <Download size={18} /> {saving ? 'Preparando…' : 'Baixar .html'}
+          </button>
+        </div>
         <p className="max-w-sm text-center text-sm text-black/50">
-          Um arquivo .html com o site da turma e dicas de cursos grátis para continuar aprendendo.
+          O site da turma funcionando de verdade, com dicas de cursos grátis para continuar aprendendo.
         </p>
       </div>
 

@@ -131,8 +131,8 @@ export async function buildSiteHtml(state: SiteState): Promise<string> {
 
   const site = renderToStaticMarkup(<SitePreview state={state} interactive={false} />)
 
-  // A fonte pixelada aparece nas artes dos temas (placar, claquete, portátil…)
-  const families = [font?.id, theme ? 'gamer' : undefined]
+  // A fonte pixelada aparece nas artes dos temas (placar, claquete, portátil…); a manuscrita, nos títulos do caderno
+  const families = [font?.id, theme ? 'gamer' : undefined, 'manuscrita']
     .filter((f, i, all): f is string => !!f && all.indexOf(f) === i)
     .map((f) => `family=${FONT_LINKS[f]}`)
   const fontLink = families.length
@@ -220,59 +220,102 @@ ${siteCss}
 .site-themed { min-height: 100vh; min-height: 100svh; }
 .site-modal-backdrop { position: fixed; }
 
-/* ===== Página "Continue aprendendo" ===== */
+/* ===== Página "Continue aprendendo": folha de caderno, como na oficina ===== */
 .aprenda {
+  --papel: #fdfbf3; --tinta: #1f3a93; --vermelho: #e63946; --fita: rgba(255, 214, 102, 0.85);
+  --torto: 6px 16px 8px 14px / 14px 8px 16px 6px;
+  position: relative;
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  background: color-mix(in srgb, var(--accent) 7%, var(--bg));
-  color: var(--text);
-  border-top: 4px solid var(--accent);
-  padding: 64px 20px 40px;
+  color: var(--tinta);
+  background-color: var(--papel);
+  background-image: linear-gradient(90deg, transparent 46px, rgba(230, 57, 70, 0.35) 46px 48px, transparent 48px),
+    repeating-linear-gradient(transparent 0 31px, rgba(31, 58, 147, 0.13) 31px 32px);
+  border-top: 2px solid var(--tinta);
+  padding: 80px 24px 40px 72px;
 }
+/* espiral do caderno */
+.aprenda::before {
+  content: ''; position: absolute; top: -16px; left: 0; right: 0; height: 34px;
+  background: radial-gradient(ellipse 5px 15px at 50% 50%, transparent 2.5px, #8d93a3 3px 5px, transparent 5.5px) 0 0 / 38px 34px repeat-x;
+}
+.aprenda a { color: var(--vermelho); }
 .aprenda-in { max-width: 1040px; margin: 0 auto; }
 .aprenda-topo { max-width: 46em; margin-bottom: 56px; }
 .aprenda-selo {
-  display: inline-block; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
-  color: var(--accent); border: 1.5px solid currentColor; border-radius: 999px; padding: 4px 12px; margin-bottom: 18px;
+  display: inline-block; font: 700 22px/1.2 'Caveat', cursive; padding: 2px 16px; margin-bottom: 18px;
+  background: var(--fita); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15); transform: rotate(-2deg);
 }
-.aprenda h2 { font-size: clamp(32px, 6vw, 52px); line-height: 1.05; font-weight: 800; letter-spacing: -0.03em; text-wrap: balance; }
-.aprenda h2 em { font-style: normal; color: var(--accent); }
-.aprenda-topo p { font-size: 18px; line-height: 1.6; opacity: 0.8; margin-top: 16px; text-wrap: pretty; }
-.aprenda section { margin-bottom: 56px; }
-.aprenda h3 { font-size: 24px; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 6px; }
-.aprenda h3 + p { opacity: 0.7; margin-bottom: 20px; }
-.grade { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
-.codigo { background: #17151f; color: #e7e5f0; border-radius: 14px; overflow: hidden; min-width: 0; }
-.codigo figcaption { font: 13px ui-monospace, Menlo, monospace; padding: 12px 14px; border-bottom: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.65); }
-.codigo figcaption span { color: #111; font-weight: 700; padding: 2px 7px; margin-right: 4px; }
+.aprenda h2 { font: 700 clamp(44px, 8vw, 72px)/1 'Caveat', cursive; text-wrap: balance; }
+.aprenda h2 em { font-style: normal; color: var(--vermelho); }
+.aprenda-topo p { font-size: 18px; line-height: 1.6; margin-top: 16px; text-wrap: pretty; }
+.aprenda section { margin-bottom: 64px; }
+.aprenda h3 {
+  display: inline; font: 700 36px/1.1 'Caveat', cursive;
+  background: linear-gradient(transparent 58%, var(--fita) 58% 92%, transparent 92%);
+}
+.aprenda h3 + p { opacity: 0.75; margin: 10px 0 24px; }
+.grade { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 22px; }
+
+/* cartões com contorno de caneta, sombra e fita adesiva */
+.codigo, .passos li, .recurso, .caminho div {
+  position: relative; background: #fffef9; border: 2.5px solid var(--tinta); border-radius: var(--torto);
+  box-shadow: 4px 5px 0 var(--tinta);
+}
+.recurso::after, .caminho div::after {
+  content: ''; position: absolute; top: -10px; left: 50%; width: 58px; height: 18px; margin-left: -29px;
+  background: var(--fita); transform: rotate(-3deg);
+}
+.grade > :nth-child(odd), .caminho div:nth-child(odd) { transform: rotate(-0.6deg); }
+.grade > :nth-child(even), .caminho div:nth-child(even) { transform: rotate(0.5deg); }
+
+.codigo { background: #17151f; color: #e7e5f0; overflow: hidden; min-width: 0; }
+.codigo figcaption { font: 13px ui-monospace, Menlo, monospace; padding: 12px 14px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); color: rgba(255, 255, 255, 0.65); }
+.codigo figcaption span { color: #111; font-weight: 700; padding: 2px 7px; margin-right: 4px; border: 1.5px solid #111; }
 .codigo pre { font: 12.5px/1.7 ui-monospace, Menlo, monospace; padding: 14px; overflow-x: auto; max-height: 340px; }
-.passos { list-style: none; counter-reset: passo; display: grid; gap: 10px; }
-.passos li {
-  counter-increment: passo; position: relative; background: var(--surface); border-radius: 14px;
-  padding: 16px 18px 16px 62px; line-height: 1.55; border: 1px solid color-mix(in srgb, var(--text) 10%, transparent);
-}
+
+.passos { list-style: none; counter-reset: passo; display: grid; gap: 16px; }
+.passos li { counter-increment: passo; padding: 16px 18px 16px 66px; line-height: 1.55; }
 .passos li::before {
-  content: counter(passo); position: absolute; left: 16px; top: 14px; width: 32px; height: 32px; border-radius: 50%;
-  display: grid; place-items: center; font-weight: 800; background: var(--accent); color: var(--on-accent);
+  content: counter(passo); position: absolute; left: 14px; top: 12px; width: 38px; height: 38px; border-radius: 50%;
+  display: grid; place-items: center; font: 700 26px/1 'Caveat', cursive; background: var(--fita); border: 2px solid var(--tinta);
 }
-.passos code, .desafio code { font-family: ui-monospace, Menlo, monospace; background: color-mix(in srgb, var(--accent) 14%, transparent); padding: 1px 6px; border-radius: 5px; }
-.desafio { margin-top: 14px; border-left: 4px solid var(--accent2); padding: 10px 16px; background: color-mix(in srgb, var(--accent2) 10%, transparent); border-radius: 0 12px 12px 0; line-height: 1.55; }
-.recurso {
-  display: flex; flex-direction: column; gap: 6px; text-decoration: none; background: var(--surface); border-radius: 16px; padding: 18px;
-  border: 1px solid color-mix(in srgb, var(--text) 10%, transparent); transition: transform 0.2s, box-shadow 0.2s;
+.passos code, .desafio code { font-family: ui-monospace, Menlo, monospace; background: rgba(255, 214, 102, 0.5); padding: 1px 6px; border-radius: 5px; }
+.desafio {
+  margin-top: 22px; padding: 16px 18px; line-height: 1.55; background: #fff3b0; transform: rotate(-1deg);
+  box-shadow: 3px 4px 0 rgba(31, 58, 147, 0.25);
 }
-.recurso:hover { transform: translateY(-3px); box-shadow: 0 14px 30px -14px color-mix(in srgb, var(--accent) 60%, transparent); }
-.recurso strong { font-size: 18px; color: var(--accent); }
-.recurso span:last-child { opacity: 0.75; line-height: 1.5; font-size: 15px; }
-.recurso-quem { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.55; }
-.youtube .recurso { border-top: 4px solid #FF0033; }
-.caminho { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; }
-.caminho div { background: var(--surface); border-radius: 16px; padding: 18px; border: 1px solid color-mix(in srgb, var(--text) 10%, transparent); }
-.caminho b { display: inline-grid; place-items: center; min-width: 44px; height: 44px; padding: 0 8px; border-radius: 12px; background: var(--accent); color: var(--on-accent); font-weight: 800; }
-.caminho small { display: block; margin: 12px 0 4px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; font-size: 12px; opacity: 0.6; }
+
+.recurso { display: flex; flex-direction: column; gap: 6px; text-decoration: none; padding: 20px 18px 18px; color: var(--tinta) !important; transition: transform 0.2s, box-shadow 0.2s; }
+.recurso:hover { transform: translate(-2px, -3px) rotate(0deg); box-shadow: 7px 8px 0 var(--tinta); }
+.recurso strong { font-size: 18px; color: var(--vermelho); }
+.recurso span:last-child { opacity: 0.8; line-height: 1.5; font-size: 15px; }
+.recurso-quem { font: 700 11px ui-monospace, Menlo, monospace; text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.55; }
+.youtube .recurso::after { background: rgba(255, 0, 51, 0.35); }
+
+.caminho { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 22px; margin-top: 8px; }
+.caminho div { padding: 22px 18px 18px; }
+.caminho b {
+  display: inline-grid; place-items: center; min-width: 48px; height: 34px; padding: 0 10px; color: #111;
+  font: 700 15px ui-monospace, Menlo, monospace; border: 2px solid var(--tinta);
+}
+.caminho div:nth-child(1) b { background: #ffb547; }
+.caminho div:nth-child(2) b { background: #4dc9ff; }
+.caminho div:nth-child(3) b { background: #f7df1e; }
+.caminho div:nth-child(4) b { background: var(--vermelho); color: #fff; }
+.caminho small { display: block; margin: 12px 0 4px; font: 700 22px/1.1 'Caveat', cursive; color: var(--vermelho); }
 .caminho p { line-height: 1.5; }
-.dicas { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; margin-top: 14px; list-style: none; }
-.dicas li { padding: 14px 16px; border-radius: 12px; border: 1.5px dashed color-mix(in srgb, var(--text) 25%, transparent); line-height: 1.5; }
-.aprenda-fim { text-align: center; font-size: 14px; opacity: 0.6; padding-top: 24px; border-top: 1px solid color-mix(in srgb, var(--text) 12%, transparent); }
+.dicas { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin-top: 28px; list-style: none; }
+.dicas li { padding: 14px 16px; border-radius: var(--torto); border: 2px dashed rgba(31, 58, 147, 0.4); line-height: 1.5; }
+.aprenda-fim { text-align: center; font: 700 26px/1.2 'Caveat', cursive; padding-top: 24px; border-top: 2px solid rgba(31, 58, 147, 0.2); }
+
+/* No celular a margem vermelha vai para a beirada */
+@media (max-width: 640px) {
+  .aprenda {
+    padding: 64px 18px 32px 22px;
+    background-image: linear-gradient(90deg, transparent 6px, rgba(230, 57, 70, 0.35) 6px 8px, transparent 8px),
+      repeating-linear-gradient(transparent 0 31px, rgba(31, 58, 147, 0.13) 31px 32px);
+  }
+}
 </style>
 </head>
 <body>
@@ -281,7 +324,7 @@ ${siteCss}
 ${site}
 
 <!-- ===== Continue aprendendo ===== -->
-<div class="aprenda" style="--bg:${pal.bg};--surface:${pal.surface};--text:${pal.text};--accent:${pal.accent};--accent2:${pal.accent2};--on-accent:${pal.onAccent}">
+<div class="aprenda">
   <div class="aprenda-in">
     <header class="aprenda-topo">
       <span class="aprenda-selo">Oficina “Do usuário ao criador” · ${today}</span>
@@ -351,6 +394,16 @@ ${WIDGETS_JS.replace(/<\/script/gi, '<\\/script')}
 </body>
 </html>
 `
+}
+
+// Abre o site numa aba nova, funcionando de verdade (no celular, abrir o .html baixado
+// pelo app de arquivos às vezes só mostra uma prévia, sem JavaScript).
+// A aba é aberta antes (no clique) para o navegador não bloquear como pop-up.
+export async function openSite(state: SiteState, tab: Window | null) {
+  const html = await buildSiteHtml(state)
+  const url = URL.createObjectURL(new Blob([html], { type: 'text/html;charset=utf-8' }))
+  if (tab) tab.location.href = url
+  else window.location.href = url
 }
 
 export async function downloadSite(state: SiteState) {
